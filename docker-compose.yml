@@ -2,12 +2,9 @@ version: '3.8'
 
 services:
   checkapp-backend:
-    # ✅ Build direto no Portainer (mais fácil)
-    # No Docker Swarm, precisa especificar image mesmo com build
+    # ✅ Imagem já buildada no servidor (build manual)
     image: checkapp-backend:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # build: removido - build feito manualmente no servidor
     
     networks:
       - network_public
