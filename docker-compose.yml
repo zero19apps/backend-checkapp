@@ -45,9 +45,7 @@ services:
         reservations:
           cpus: '0.5'
           memory: 256M
-      placement:
-        constraints:
-          - node.role == worker  # Ou manager, conforme sua configuração
+      # ✅ Removido placement constraints - pode estar bloqueando o agendamento
     
     labels:
       # Traefik Labels
