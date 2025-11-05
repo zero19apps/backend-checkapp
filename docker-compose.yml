@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  checkapp-backend:
+    image: checkapp-backend:latest
+    # Ou build local (descomente para build local):
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    
+    networks:
+      - network_public
+    
+    ports:
+      - "3223:3223"
+    
+    environment:
+      - NODE_ENV=production
+      - BACKEND_PORT=3223
+      # Adicionar suas variáveis de ambiente aqui ou usar secrets
+      - DATABASE_URL=${DATABASE_URL}
+      - SHOPPING_SCHEMA=${SHOPPING_SCHEMA:-passeio}
+      - FRONTEND_URL=https://zero19.top
+      - GOOGLE_SHEETS_CLIENT_EMAIL=${GOOGLE_SHEETS_CLIENT_EMAIL}
+      - GOOGLE_SHEETS_PRIVATE_KEY=${GOOGLE_SHEETS_PRIVATE_KEY}
+      - GOOGLE_DRIVE_FOLDER_ID=${GOOGLE_DRIVE_FOLDER_ID}
+    
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    
+    labels:
+      # Traefik Labels
+      - "traefik.enable=true"
+      - "traefik.docker.network=network_public"
+      
+      # Router
+      - "traefik.http.routers.checkapp-backend.rule=Host(`apicheckapp.zero19.top`)"
+      - "traefik.http.routers.checkapp-backend.entrypoints=websecure"
+      - "traefik.http.routers.checkapp-backend.priority=1"
+      - "traefik.http.routers.checkapp-backend.tls.certresolver=letsencryptresolver"
+      
+      # Service
+      - "traefik.http.routers.checkapp-backend.service=checkapp-backend"
+      - "traefik.http.services.checkapp-backend.loadbalancer.server.port=3223"
+      
+      # Middlewares (opcional - para headers)
+      - "traefik.http.routers.checkapp-backend.middlewares=checkapp-backend-headers"
+      - "traefik.http.middlewares.checkapp-backend-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
+    
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3223/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+networks:
+  network_public:
+    external: true
+
