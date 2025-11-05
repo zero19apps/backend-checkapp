@@ -2,25 +2,29 @@ version: '3.8'
 
 services:
   checkapp-backend:
-    image: checkapp-backend:latest
-    # Ou build local (descomente para build local):
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
+    # ✅ Build direto no Portainer (mais fácil)
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    # Ou usar imagem pré-buildada (descomente se já tiver):
+    # image: checkapp-backend:latest
     
     networks:
       - network_public
     
-    ports:
-      - "3223:3223"
+    # ✅ Portas não precisam (Traefik faz proxy)
+    # ports:
+    #   - "3223:3223"
     
     environment:
+      # ✅ ENVs fixas (podem ir direto no YAML)
       - NODE_ENV=production
       - BACKEND_PORT=3223
-      # Adicionar suas variáveis de ambiente aqui ou usar secrets
-      - DATABASE_URL=${DATABASE_URL}
-      - SHOPPING_SCHEMA=${SHOPPING_SCHEMA:-passeio}
       - FRONTEND_URL=https://zero19.top
+      
+      # ✅ ENVs sensíveis (configure no Portainer)
+      - DATABASE_URL=${DATABASE_URL}
       - GOOGLE_SHEETS_CLIENT_EMAIL=${GOOGLE_SHEETS_CLIENT_EMAIL}
       - GOOGLE_SHEETS_PRIVATE_KEY=${GOOGLE_SHEETS_PRIVATE_KEY}
       - GOOGLE_DRIVE_FOLDER_ID=${GOOGLE_DRIVE_FOLDER_ID}
@@ -42,6 +46,9 @@ services:
         reservations:
           cpus: '0.5'
           memory: 256M
+      placement:
+        constraints:
+          - node.role == worker  # Ou manager, conforme sua configuração
     
     labels:
       # Traefik Labels
@@ -58,7 +65,7 @@ services:
       - "traefik.http.routers.checkapp-backend.service=checkapp-backend"
       - "traefik.http.services.checkapp-backend.loadbalancer.server.port=3223"
       
-      # Middlewares (opcional - para headers)
+      # Middlewares
       - "traefik.http.routers.checkapp-backend.middlewares=checkapp-backend-headers"
       - "traefik.http.middlewares.checkapp-backend-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
     
@@ -72,4 +79,3 @@ services:
 networks:
   network_public:
     external: true
-
