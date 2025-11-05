@@ -419,6 +419,67 @@ export class TotalService {
     }
   }
 
+  /** Buscar totais por loja e/ou auditoria */
+  static async getTotalAuditoria(idLoja?: string, idAuditoria?: string): Promise<Total[]> {
+    try {
+      const client = await pool.connect();
+      const tableName = getTableName('total');
+      
+      let query = `
+        SELECT 
+          id,
+          id_auditoria,
+          id_loja,
+          sistema,
+          foto,
+          valor,
+          qtd_vendas,
+          data_auditoria,
+          d_auditada,
+          d_auditoria_h,
+          d_audit,
+          email_auditor,
+          nome_loja,
+          nome_tipo,
+          pagamento,
+          foto2,
+          foto3,
+          img01,
+          img02,
+          img03,
+          assinatura,
+          nome_luc,
+          mes_ano
+        FROM ${tableName}
+        WHERE 1=1
+      `;
+      
+      const params: any[] = [];
+      let paramIndex = 1;
+      
+      if (idLoja) {
+        query += ` AND id_loja = $${paramIndex}`;
+        params.push(idLoja);
+        paramIndex++;
+      }
+      
+      if (idAuditoria) {
+        query += ` AND id_auditoria = $${paramIndex}`;
+        params.push(idAuditoria);
+      }
+      
+      query += ` ORDER BY data_auditoria DESC`;
+      
+      const result = await client.query(query, params);
+      
+      client.release();
+      return result.rows;
+    } catch (error) {
+      console.error('❌ [TotalService] Erro ao buscar totais por auditoria:', error);
+      throw error;
+    }
+  }
+
   /** Criar novo total */
   static async createTotal(total: Omit<Total, 'id'>): Promise<Total> {
     try {
@@ -427,15 +488,15 @@ export class TotalService {
       
       const result = await client.query(`
         INSERT INTO ${tableName} (
-          id, id_auditoria, id_loja, sistema, foto, valor, qtd_vendas,
+          id_auditoria, id_loja, sistema, foto, valor, qtd_vendas,
           data_auditoria, d_auditada, d_auditoria_h, d_audit, email_auditor,
           nome_loja, nome_tipo, pagamento, foto2, foto3, img01, img02, img03,
           assinatura, nome_luc, mes_ano
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
         RETURNING *
       `, [
-        total.id, total.id_auditoria, total.id_loja, total.sistema, total.foto,
+        total.id_auditoria, total.id_loja, total.sistema, total.foto,
         total.valor, total.qtd_vendas, total.data_auditoria, total.d_auditada,
         total.d_auditoria_h, total.d_audit, total.email_auditor, total.nome_loja,
         total.nome_tipo, total.pagamento, total.foto2, total.foto3, total.img01,
@@ -508,6 +569,6 @@ export async function getAuditoriasData(idRoteiro?: string): Promise<Auditoria[]
   return AuditoriaService.getAuditorias(idRoteiro);
 }
 
-export async function getTotalAuditoriaData(idLoja?: string, idAuditoria?: string): Promise<TotalAuditoria[]> {
-  return totalService.getTotalAuditoria(idLoja, idAuditoria);
+export async function getTotalAuditoriaData(idLoja?: string, idAuditoria?: string): Promise<Total[]> {
+  return TotalService.getTotalAuditoria(idLoja, idAuditoria);
 }

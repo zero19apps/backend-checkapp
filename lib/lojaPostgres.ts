@@ -173,14 +173,14 @@ export class LojaService {
       
       const result = await client.query(`
         INSERT INTO ${tableName} (
-          id_loja, nome_loja, luc_box, metragem, piso, corredor,
+          nome_loja, luc_box, metragem, piso, corredor,
           classificacao, categoria, segmentos, status, img_loja,
           valor_contrato, percentual, nome_luc, contrato
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         RETURNING *
       `, [
-        loja.id_loja, loja.nome_loja, loja.luc_box, loja.metragem, loja.piso, loja.corredor,
+        loja.nome_loja, loja.luc_box, loja.metragem, loja.piso, loja.corredor,
         loja.classificacao, loja.categoria, loja.segmentos, loja.status, loja.img_loja,
         loja.valor_contrato, loja.percentual, loja.nome_luc, loja.contrato
       ]);

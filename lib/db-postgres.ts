@@ -35,7 +35,6 @@ const pool = new Pool({
   idleTimeoutMillis: 10000, // 10 segundos (mais agressivo)
   connectionTimeoutMillis: 5000, // 5 segundos
   allowExitOnIdle: true, // Permite sair quando idle
-  acquireTimeoutMillis: 10000, // 10 segundos para adquirir conexão
 });
 
 // ✅ EVENTOS DO POOL
