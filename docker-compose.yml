@@ -13,13 +13,16 @@ services:
     # ports:
     #   - "3223:3223"
     
-    env_file:
-      - .env
     environment:
-      # ✅ ENVs fixas (podem ser sobrescritas pelo .env)
-      - NODE_ENV=${NODE_ENV:-production}
-      - BACKEND_PORT=${BACKEND_PORT:-3223}
-      - FRONTEND_URL=${FRONTEND_URL:-https://zero19.top}
+      # ✅ ENVs fixas
+      - NODE_ENV=production
+      - BACKEND_PORT=3223
+      - FRONTEND_URL=https://zero19.top
+      # ⚠️ Configurar estas variáveis no Portainer (Environment variables) ou via comando:
+      # - DATABASE_URL (obrigatório)
+      # - GOOGLE_SHEETS_CLIENT_EMAIL (obrigatório)
+      # - GOOGLE_SHEETS_PRIVATE_KEY (obrigatório)
+      # - GOOGLE_DRIVE_FOLDER_ID (obrigatório)
     
     deploy:
       replicas: 2
