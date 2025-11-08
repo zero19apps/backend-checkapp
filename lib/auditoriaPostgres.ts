@@ -481,10 +481,10 @@ export class TotalService {
   }
 
   /** Criar novo total */
-  static async createTotal(total: Omit<Total, 'id'>): Promise<Total> {
+  static async createTotal(total: Omit<Total, 'id'>, schema?: string): Promise<Total> {
     try {
       const client = await pool.connect();
-      const tableName = getTableName('total');
+      const tableName = getTableName('total', schema);
       
       const result = await client.query(`
         INSERT INTO ${tableName} (

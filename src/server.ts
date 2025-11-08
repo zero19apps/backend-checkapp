@@ -54,6 +54,7 @@ app.get('/health', (req, res) => {
 import roteiroRoutes from './routes/roteiro';
 import lojasRoutes from './routes/lojas';
 import mapeamentosRoutes from './routes/mapeamentos';
+import funcionariosRoutes from './routes/funcionarios';
 import auditoriaRoutes from './routes/auditoria';
 import auditoriaDiaRoutes from './routes/auditoriaDia';
 import syncRoutes from './routes/sync';
@@ -63,6 +64,7 @@ import miscRoutes from './routes/misc';
 app.use('/api/roteiro', roteiroRoutes);
 app.use('/api/lojas', lojasRoutes);
 app.use('/api/mapeamentos', mapeamentosRoutes);
+app.use('/api/funcionarios', funcionariosRoutes);
 app.use('/api/auditoria', auditoriaRoutes);
 app.use('/api/auditoriaDia', auditoriaDiaRoutes);
 app.use('/api/sync', syncRoutes);

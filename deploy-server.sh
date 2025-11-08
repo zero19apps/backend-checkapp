@@ -44,3 +44,4 @@ echo ""
 echo "📋 Veja os logs com:"
 echo "   docker service logs -f checkapp-backend_checkapp-backend"
 
+
