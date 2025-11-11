@@ -58,6 +58,8 @@ import funcionariosRoutes from './routes/funcionarios';
 import auditoriaRoutes from './routes/auditoria';
 import auditoriaDiaRoutes from './routes/auditoriaDia';
 import syncRoutes from './routes/sync';
+import rulesRoutes from './routes/rules';
+import telemetryRoutes from './routes/telemetry';
 import userRoutes from './routes/user';
 import miscRoutes from './routes/misc';
 
@@ -68,6 +70,8 @@ app.use('/api/funcionarios', funcionariosRoutes);
 app.use('/api/auditoria', auditoriaRoutes);
 app.use('/api/auditoriaDia', auditoriaDiaRoutes);
 app.use('/api/sync', syncRoutes);
+app.use('/api/rules', rulesRoutes);
+app.use('/api/telemetry', telemetryRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api', miscRoutes); // Rotas diversas (image-proxy, upload, etc.)
 

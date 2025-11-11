@@ -3,7 +3,7 @@
 
 import { Router } from 'express';
 import { handleImageProxy } from '../services/image-proxy';
-import { handleUploadFoto } from '../services/upload';
+import { handleUploadFoto, handleUploadFotoBase64 } from '../services/upload';
 
 const router = Router();
 
@@ -11,10 +11,10 @@ const router = Router();
 router.get('/image-proxy', handleImageProxy);
 
 // POST /api/upload-foto
-router.post('/upload-foto', handleUploadFoto);
+router.post('/upload-foto', handleUploadFotoBase64);
 
 // POST /api/upload-foto-auditoria
-router.post('/upload-foto-auditoria', handleUploadFoto); // Por enquanto usa o mesmo handler
+router.post('/upload-foto-auditoria', handleUploadFotoBase64);
 
 export default router;
 

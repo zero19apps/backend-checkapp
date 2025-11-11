@@ -2,29 +2,47 @@ version: '3.8'
 
 services:
   checkapp-backend:
-    # ✅ Imagem já buildada no servidor (build manual)
     image: checkapp-backend:latest
-    # build: removido - build feito manualmente no servidor
-    
     networks:
       - network_public
-    
-    # ✅ Portas não precisam (Traefik faz proxy)
-    # ports:
-    #   - "3223:3223"
-    
+
     environment:
-      # ✅ ENVs fixas
       - NODE_ENV=production
       - BACKEND_PORT=3223
       - FRONTEND_URL=https://zero19.top
-      
-      # ✅ ENVs do backend (valores completos)
       - DATABASE_URL=postgresql://postgres:vVQbSycgpXmP57@72.61.218.13:5432/shoppings
       - GOOGLE_SHEETS_CLIENT_EMAIL=painel-checkapp@mauan8n.iam.gserviceaccount.com
-      - GOOGLE_SHEETS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCYjEEo48ImH3/l\nJPf87sjaPsbZuOWhvYm31pwJHZo8zpZh4IUeAYZrMD7glqT9rupTbHvgogolXHC7\nJE+ANEFjik49PbZAHYlxJBOYrrOQSHAsXIhSA8LlVlY2pT4/E7oHqZlniv2UejY/\na7ow7aexj5nBdNJY6PiRqRqT5if0nvV/JCpcVp2hxzNwYqdTTqxWtGvKUmJ8+YBA\n9oQlqeJYk3B/xLCcbAIQNQP12WtOns1twxl5iMpSEl3s+uNkafvI3GOS3ASwAq0a\nsa8pD7J4W5YpX35AJkdhRpYOuE47kCA5KPAxoCewNY3R7klHrMtTrfQFHuexGk2E\n0WrzUxwnAgMBAAECggEANTrnt9F122Cte7OBN0jJXGKAd9OtiVk+l6Ay9XlXazV5\nQzEZskU89uUwY6UdcIobKT4XIeTZHn1ZtuuuNCHH2WiW8Ya5tDi6T3kTv3jinouw\nXMJzLQ8z8FvGnK3fgRoslWToazmUT72vdUTthQpAtFRUBi3yAmVU61rzM72hnplZ\nIOaxFkm7MPCeUW2bKlA239hcxacBtnfxbmmeG185YjT+drU7HoOH47s6Z3Sb9zvO\nW8XsOcFAFQxOftBpojvEljEuPL15bZWoAk/u2YMBOJb4Tms3EmsGisL6VOa0Qk1W\nOwlkKd8XZhfm4RXA9SflBNPUeKdYW41Wy0GfLcyRoQKBgQDP02xbnBep5aaKwANU\nUa/sAjK6jNevRD9POO1xwDfvynd9A2KvYp+SOA45S0O4LWUcHZHe3gwLGRcb3/DB\nY/HEJg/ojIQfaxMrhD6SVrlEAiKQBpo6NhtW2jQWqIIVdYStijJe8t9Q+Ef8C/aL\nbc+MddIcwF6AyaOaZHWgEtti4QKBgQC76JWME73dGQm2iqMCp09yomrQsNW5O7hX\nCFNxH6wMoiG+CSgDkXoysogDixERo/16CjIoeGvFvXDfM+QSgz/tmKuevdQ5h3aS\nVyx6vltwOr6bvVIb08sb/J/0gt/wWHSolgmRU35kIVCOegjNK/AbMtwcn7bKmlwa\ne8uxXChoBwKBgQDEJ/jRar4HFQQhV+SMlGFocBazbzYwbkkXHFM5F0V0pfQr4aMm\niP62AwSh3UE4uFgDtoE1Cv3xB6iBHdheoFfUXFyNkPsvsF+ypips80AASceXizPM\nl78sNd4OONQ3Lumg5pxuc+yFvyIqapw0s9u+5oH/sy4/fpJVqlY/VS0O4QKBgA9P\nmD/dq+7EB4KUMUwaDeMtUL7IaeG59/8/cm0ZQ4+T9mPhox0HUYmn+mUvg6iIUDMN\neaDKjx2BnhzRwZewkhjuA63fkddOLl8mMz2dHR476yQNfQ8/ZqFVKENoFo8i5f6G\nmyj4QKgv/rxdPTJajinpLv42FVLU2QRfae19sN0pAoGBAIOaiNTm8RlyIAbA2j4D\nv0RhMpl5k6oq0WcEKYW5Na/QLaA/7Cb0Gnyu4VQv2DSiBwL9oFTyflU4lJQrjvzO\nhFc1pUBzufayEWuTWAqnmaonwX4zD+eeFF+KbrZaXmGqG5S9J2OVxqjEQ1nQeu8/\nvSvALm8uFh9vE4shu7hpZZpY\n-----END PRIVATE KEY-----\n
+      - GOOGLE_SHEETS_PRIVATE_KEY=|
+          -----BEGIN PRIVATE KEY-----
+          MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCYjEEo48ImH3/l
+          JPf87sjaPsbZuOWhvYm31pwJHZo8zpZh4IUeAYZrMD7glqT9rupTbHvgogolXHC7
+          JE+ANEFjik49PbZAHYlxJBOYrrOQSHAsXIhSA8LlVlY2pT4/E7oHqZlniv2UejY/
+          a7ow7aexj5nBdNJY6PiRqRqT5if0nvV/JCpcVp2hxzNwYqdTTqxWtGvKUmJ8+YBA
+          9oQlqeJYk3B/xLCcbAIQNQP12WtOns1twxl5iMpSEl3s+uNkafvI3GOS3ASwAq0a
+          sa8pD7J4W5YpX35AJkdhRpYOuE47kCA5KPAxoCewNY3R7klHrMtTrfQFHuexGk2E
+          0WrzUxwnAgMBAAECggEANTrnt9F122Cte7OBN0jJXGKAd9OtiVk+l6Ay9XlXazV5
+          QzEZskU89uUwY6UdcIobKT4XIeTZHn1ZtuuuNCHH2WiW8Ya5tDi6T3kTv3jinouw
+          XMJzLQ8z8FvGnK3fgRoslWToazmUT72vdUTthQpAtFRUBi3yAmVU61rzM72hnplZ
+          IOaxFkm7MPCeUW2bKlA239hcxacBtnfxbmmeG185YjT+drU7HoOH47s6Z3Sb9zvO
+          W8XsOcFAFQxOftBpojvEljEuPL15bZWoAk/u2YMBOJb4Tms3EmsGisL6VOa0Qk1W
+          OwlkKd8XZhfm4RXA9SflBNPUeKdYW41Wy0GfLcyRoQKBgQDP02xbnBep5aaKwANU
+          Ua/sAjK6jNevRD9POO1xwDfvynd9A2KvYp+SOA45S0O4LWUcHZHe3gwLGRcb3/DB
+          Y/HEJg/ojIQfaxMrhD6SVrlEAiKQBpo6NhtW2jQWqIIVdYStijJe8t9Q+Ef8C/aL
+          bc+MddIcwF6AyaOaZHWgEtti4QKBgQC76JWME73dGQm2iqMCp09yomrQsNW5O7hX
+          CFNxH6wMoiG+CSgDkXoysogDixERo/16CjIoeGvFvXDfM+QSgz/tmKuevdQ5h3aS
+          Vyx6vltwOr6bvVIb08sb/J/0gt/wWHSolgmRU35kIVCOegjNK/AbMtwcn7bKmlwa
+          e8uxXChoBwKBgQDEJ/jRar4HFQQhV+SMlGFocBazbzYwbkkXHFM5F0V0pfQr4aMm
+          iP62AwSh3UE4uFgDtoE1Cv3xB6iBHdheoFfUXFyNkPsvsF+ypips80AASceXizPM
+          l78sNd4OONQ3Lumg5pxuc+yFvyIqapw0s9u+5oH/sy4/fpJVqlY/VS0O4QKBgA9P
+          mD/dq+7EB4KUMUwaDeMtUL7IaeG59/8/cm0ZQ4+T9mPhox0HUYmn+mUvg6iIUDMN
+          eaDKjx2BnhzRwZewkhjuA63fkddOLl8mMz2dHR476yQNfQ8/ZqFVKENoFo8i5f6G
+          myj4QKgv/rxdPTJajinpLv42FVLU2QRfae19sN0pAoGBAIOaiNTm8RlyIAbA2j4D
+          v0RhMpl5k6oq0WcEKYW5Na/QLaA/7Cb0Gnyu4VQv2DSiBwL9oFTyflU4lJQrjvzO
+          hFc1pUBzufayEWuTWAqnmaonwX4zD+eeFF+KbrZaXmGqG5S9J2OVxqjEQ1nQeu8/
+          vSvALm8uFh9vE4shu7hpZZpY
+          -----END PRIVATE KEY-----
       - GOOGLE_DRIVE_FOLDER_ID=1nYCPKmfR8rJlAuWyaafCb3o73m_kpz5k
-    
+
     deploy:
       replicas: 2
       update_config:
@@ -42,27 +60,19 @@ services:
         reservations:
           cpus: '0.5'
           memory: 256M
-      # ✅ Removido placement constraints - pode estar bloqueando o agendamento
-    
+
     labels:
-      # Traefik Labels
       - "traefik.enable=true"
       - "traefik.docker.network=network_public"
-      
-      # Router
       - "traefik.http.routers.checkapp-backend.rule=Host(`apicheckapp.zero19.top`)"
       - "traefik.http.routers.checkapp-backend.entrypoints=websecure"
       - "traefik.http.routers.checkapp-backend.priority=1"
       - "traefik.http.routers.checkapp-backend.tls.certresolver=letsencryptresolver"
-      
-      # Service
       - "traefik.http.routers.checkapp-backend.service=checkapp-backend"
       - "traefik.http.services.checkapp-backend.loadbalancer.server.port=3223"
-      
-      # Middlewares
       - "traefik.http.routers.checkapp-backend.middlewares=checkapp-backend-headers"
       - "traefik.http.middlewares.checkapp-backend-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
-    
+
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:3223/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
       interval: 30s
@@ -73,5 +83,3 @@ services:
 networks:
   network_public:
     external: true
-
-

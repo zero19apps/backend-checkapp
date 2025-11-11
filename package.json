@@ -2,11 +2,11 @@
   "name": "backend-checkapp",
   "version": "1.0.0",
   "description": "Backend API standalone para CheckApp - Enterprise-grade",
-  "main": "dist/server.js",
+  "main": "dist/src/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "check": "curl http://localhost:3223/health",
     "test": "echo \"No tests yet\" && exit 0"
   },
