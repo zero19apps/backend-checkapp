@@ -726,6 +726,7 @@ async function processDeletes(
 }
 
 const PHOTO_FIELDS = ['assinatura'];
+const SIXTY_DAYS_MS = 1000 * 60 * 60 * 24 * 60;
 
 router.get('/pull', async (req, res) => {
   try {
@@ -750,7 +751,15 @@ router.get('/pull', async (req, res) => {
     const limit = normalizeLimit(req.query.limit);
     const since = normalizeSince(req.query.since);
     const cursorInfo = decodeCursor(req.query.cursor);
-    const baselineTimestamp = cursorInfo?.timestamp ?? since;
+    let baselineTimestamp = cursorInfo?.timestamp ?? since;
+
+    if (!cursorInfo && (table === 'total' || table === 'auditoria')) {
+      const sixtyDaysAgo = new Date(Date.now() - SIXTY_DAYS_MS);
+      const requestedDate = new Date(baselineTimestamp);
+      if (Number.isNaN(requestedDate.getTime()) || requestedDate < sixtyDaysAgo) {
+        baselineTimestamp = sixtyDaysAgo.toISOString();
+      }
+    }
 
     const timestampExpr = await resolveTimestampExpression(table, schema);
     const tableName = getTableName(table, schema);
