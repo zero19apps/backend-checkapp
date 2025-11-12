@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   checkapp-backend:
-    image: zero19apps/checkapp-backend:latest
+    image: checkapp-backend:latest
 
     networks:
       - network_public
