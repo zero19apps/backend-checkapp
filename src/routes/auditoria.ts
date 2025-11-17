@@ -13,12 +13,12 @@ router.get('/get-auditorias-detalhes-psql', async (req, res) => {
 
     const client = await pool.connect();
     try {
-      console.log("🚀 [BACKEND-get-auditorias-detalhes-psql] Buscando dados detalhados da tabela auditoria (últimos 60 dias)");
+      console.log("🚀 [BACKEND-get-auditorias-detalhes-psql] Buscando dados detalhados da tabela auditoria (apenas hoje)");
       
       const query = `
         SELECT *
         FROM ${auditoriaTableName}
-        WHERE data_auditoria >= CURRENT_DATE - INTERVAL '60 days'
+        WHERE data_auditoria >= CURRENT_DATE
         ORDER BY data_auditoria DESC, criado_em DESC
       `;
 

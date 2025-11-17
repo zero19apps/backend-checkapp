@@ -94,8 +94,15 @@ const ISO_FALLBACK = '1970-01-01T00:00:00.000Z';
 const MAX_LIMIT = 500;
 const DEFAULT_LIMIT = 200;
 
+/**
+ * 🔒 SEGURANÇA: Resolve o nome do schema - SEM FALLBACK
+ * Se o schema não for fornecido, lança erro
+ */
 function resolveSchemaName(schema?: string): string {
-  return schema || process.env.SHOPPING_SCHEMA || 'passeio';
+  if (!schema) {
+    throw new Error('Schema é obrigatório e não pode ser undefined');
+  }
+  return schema;
 }
 
 function normalizeLimit(rawLimit: any): number {
@@ -726,7 +733,6 @@ async function processDeletes(
 }
 
 const PHOTO_FIELDS = ['assinatura'];
-const SIXTY_DAYS_MS = 1000 * 60 * 60 * 24 * 60;
 
 router.get('/pull', async (req, res) => {
   try {
@@ -751,15 +757,7 @@ router.get('/pull', async (req, res) => {
     const limit = normalizeLimit(req.query.limit);
     const since = normalizeSince(req.query.since);
     const cursorInfo = decodeCursor(req.query.cursor);
-    let baselineTimestamp = cursorInfo?.timestamp ?? since;
-
-    if (!cursorInfo && (table === 'total' || table === 'auditoria')) {
-      const sixtyDaysAgo = new Date(Date.now() - SIXTY_DAYS_MS);
-      const requestedDate = new Date(baselineTimestamp);
-      if (Number.isNaN(requestedDate.getTime()) || requestedDate < sixtyDaysAgo) {
-        baselineTimestamp = sixtyDaysAgo.toISOString();
-      }
-    }
+    const baselineTimestamp = cursorInfo?.timestamp ?? since;
 
     const timestampExpr = await resolveTimestampExpression(table, schema);
     const tableName = getTableName(table, schema);
@@ -769,6 +767,7 @@ router.get('/pull', async (req, res) => {
     const params: any[] = [];
     let whereClause: string;
 
+    // ✅ ENTERPRISE: Construir filtro baseado em watermark/cursor
     if (cursorInfo) {
       whereClause = `(${timestampExpr} > $1) OR (${timestampExpr} = $1 AND ${idColumnComparator} > $2)`;
       params.push(cursorInfo.timestamp);
@@ -778,12 +777,25 @@ router.get('/pull', async (req, res) => {
       params.push(baselineTimestamp);
     }
 
+    // ✅ ENTERPRISE: Adicionar filtros de data específicos por tabela
+    // Total: últimos 60 dias baseado em d_auditada
+    // Auditoria: apenas hoje baseado em data_auditoria
+    let dateFilterClause = '';
+    
+    if (table === 'total') {
+      // Filtrar apenas registros dos últimos 60 dias baseado em d_auditada
+      dateFilterClause = ` AND (d_auditada IS NULL OR d_auditada >= CURRENT_DATE - INTERVAL '60 days')`;
+    } else if (table === 'auditoria') {
+      // Filtrar apenas registros de hoje baseado em data_auditoria
+      dateFilterClause = ` AND (data_auditoria IS NULL OR data_auditoria >= CURRENT_DATE)`;
+    }
+
     params.push(limit);
 
     const query = `
       SELECT *, ${timestampExpr} AS _sync_timestamp
       FROM ${tableName}
-      WHERE ${whereClause}
+      WHERE ${whereClause}${dateFilterClause}
       ORDER BY _sync_timestamp ASC, ${idColumnRef} ASC
       LIMIT $${params.length}
     `;

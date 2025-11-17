@@ -9,7 +9,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.BACKEND_PORT || 3223;
+const PORT = Number(process.env.BACKEND_PORT) || 3223;
 
 // ✅ Middleware
 app.use(cors({
@@ -62,6 +62,7 @@ import rulesRoutes from './routes/rules';
 import telemetryRoutes from './routes/telemetry';
 import userRoutes from './routes/user';
 import miscRoutes from './routes/misc';
+import dataCorteRoutes from './routes/dataCorte';
 
 app.use('/api/roteiro', roteiroRoutes);
 app.use('/api/lojas', lojasRoutes);
@@ -73,6 +74,7 @@ app.use('/api/sync', syncRoutes);
 app.use('/api/rules', rulesRoutes);
 app.use('/api/telemetry', telemetryRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/data-corte', dataCorteRoutes);
 app.use('/api', miscRoutes); // Rotas diversas (image-proxy, upload, etc.)
 
 // ✅ Error handler
@@ -85,9 +87,11 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 // ✅ Iniciar servidor
-app.listen(PORT, () => {
+// Escutar em 0.0.0.0 para permitir conexões do emulador Android via 10.0.2.2
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 [BACKEND] Servidor rodando na porta ${PORT}`);
   console.log(`📡 [BACKEND] Health check: http://localhost:${PORT}/health`);
+  console.log(`🌐 [BACKEND] Escutando em 0.0.0.0:${PORT} (acessível via 10.0.2.2:${PORT} do emulador)`);
   console.log(`🌍 [BACKEND] NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
 });
 

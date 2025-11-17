@@ -24,6 +24,13 @@ export interface UpdateFuncionarioStatusInput {
   status: boolean | number | string;
 }
 
+export interface UpdateFuncionarioInput {
+  id_loja?: string;
+  nome_loja?: string | null;
+  nome_funcionario?: string;
+  status?: boolean | number | string;
+}
+
 function normalizeStatus(status?: boolean | number | string): number {
   if (typeof status === 'boolean') {
     return status ? 1 : 0;
@@ -111,6 +118,35 @@ export async function createFuncionario(
   }
 }
 
+export async function getFuncionarioById(
+  id: string,
+  schema?: string
+): Promise<Funcionario | null> {
+  const client = await pool.connect();
+  try {
+    const tableName = getTableName('funcionarios', schema);
+    const result = await client.query<Funcionario>(
+      `
+        SELECT
+          id,
+          id_loja,
+          nome_loja,
+          nome_funcionario,
+          status,
+          criado_em,
+          atualizado_em
+        FROM ${tableName}
+        WHERE id = $1
+      `,
+      [id]
+    );
+
+    return result.rows[0] || null;
+  } finally {
+    client.release();
+  }
+}
+
 export async function updateFuncionarioStatus(
   id: string,
   status: UpdateFuncionarioStatusInput['status'],
@@ -137,6 +173,88 @@ export async function updateFuncionarioStatus(
     }
 
     return result.rows[0];
+  } finally {
+    client.release();
+  }
+}
+
+export async function updateFuncionario(
+  id: string,
+  payload: UpdateFuncionarioInput,
+  schema?: string
+): Promise<Funcionario> {
+  const client = await pool.connect();
+  try {
+    const tableName = getTableName('funcionarios', schema);
+    
+    const updates: string[] = [];
+    const values: any[] = [];
+    let paramIndex = 1;
+
+    if (payload.id_loja !== undefined) {
+      updates.push(`id_loja = $${paramIndex++}`);
+      values.push(payload.id_loja);
+    }
+
+    if (payload.nome_loja !== undefined) {
+      updates.push(`nome_loja = $${paramIndex++}`);
+      values.push(payload.nome_loja);
+    }
+
+    if (payload.nome_funcionario !== undefined) {
+      updates.push(`nome_funcionario = $${paramIndex++}`);
+      values.push(payload.nome_funcionario);
+    }
+
+    if (payload.status !== undefined) {
+      updates.push(`status = $${paramIndex++}`);
+      values.push(normalizeStatus(payload.status));
+    }
+
+    if (updates.length === 0) {
+      throw new Error('Nenhum campo para atualizar');
+    }
+
+    updates.push(`atualizado_em = NOW()`);
+    values.push(id);
+
+    const result = await client.query<Funcionario>(
+      `
+        UPDATE ${tableName}
+           SET ${updates.join(', ')}
+         WHERE id = $${paramIndex}
+        RETURNING *
+      `,
+      values
+    );
+
+    if (result.rowCount === 0) {
+      throw new Error('Funcionário não encontrado');
+    }
+
+    return result.rows[0];
+  } finally {
+    client.release();
+  }
+}
+
+export async function deleteFuncionario(
+  id: string,
+  schema?: string
+): Promise<boolean> {
+  const client = await pool.connect();
+  try {
+    const tableName = getTableName('funcionarios', schema);
+    const result = await client.query(
+      `DELETE FROM ${tableName} WHERE id = $1`,
+      [id]
+    );
+
+    if (result.rowCount === 0) {
+      throw new Error('Funcionário não encontrado');
+    }
+
+    return true;
   } finally {
     client.release();
   }
