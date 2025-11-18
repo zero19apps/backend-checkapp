@@ -23,6 +23,7 @@ app.use(cors({
     'capacitor://localhost',
     'ionic://localhost',
     'http://localhost',
+    'https://localhost', // ✅ CRÍTICO: Capacitor Android usa https://localhost
     'http://localhost:8080',
     'http://localhost:3223', // Backend local
     'https://apicheckapp.zero19.top', // ✅ Domínio público da API
