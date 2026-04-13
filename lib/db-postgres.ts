@@ -30,11 +30,11 @@ export function getTableName(tableName: string, schema?: string): string {
 const pool = new Pool({
   connectionString: DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  max: 2, // Máximo 2 conexões simultâneas
-  min: 0, // Sem conexões mínimas
-  idleTimeoutMillis: 10000, // 10 segundos (mais agressivo)
-  connectionTimeoutMillis: 5000, // 5 segundos
-  allowExitOnIdle: true, // Permite sair quando idle
+  max: 20, // Suporta múltiplos apps simultâneos
+  min: 2,  // Mantém conexões prontas
+  idleTimeoutMillis: 10000,
+  connectionTimeoutMillis: 8000,
+  allowExitOnIdle: true,
 });
 
 // ✅ EVENTOS DO POOL
